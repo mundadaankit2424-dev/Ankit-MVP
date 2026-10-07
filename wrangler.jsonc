@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "leave-now-push",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-07",
+  "vars": {
+    "APP_ORIGIN": "https://mundadaankit2424-dev.github.io",
+    "APP_URL": "https://mundadaankit2424-dev.github.io/Leave-Now/"
+  },
+  "triggers": { "crons": ["* * * * *"] },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "leave-now-alerts",
+    "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+  }]
+}
