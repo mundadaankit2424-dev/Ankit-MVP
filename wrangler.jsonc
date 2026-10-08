@@ -5,7 +5,7 @@
   "compatibility_date": "2026-10-07",
   "vars": {
     "APP_ORIGIN": "https://mundadaankit2424-dev.github.io",
-    "APP_URL": "https://mundadaankit2424-dev.github.io/Leave-Now/"
+    "APP_URL": "https://mundadaankit2424-dev.github.io/Ankit-MVP/"
   },
   "triggers": { "crons": ["* * * * *"] },
   "d1_databases": [{

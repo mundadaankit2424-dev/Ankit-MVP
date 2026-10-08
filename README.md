@@ -6,12 +6,12 @@ Leave Now is an installable mobile web app for planning a commute around a requi
 
 The interface has a calm light theme by default, a dark theme switch, and five clear tabs: Plan, Map, Journey, Insights, and Settings.
 
-Leave Now is designed as a commute AutoPilot: configure your arrival time, workdays, route, and alert offsets once. After notifications are enabled, reminders are scheduled automatically and updated whenever your route, arrival time, learned history, or preferences change. The personal ETA is visible in Leave Now without opening Maps. The in-app route preview uses OpenStreetMap; open its directions page for road routing. TomTom live routing can be enabled with your own restricted API key in Settings.
+Leave Now is designed as a commute AutoPilot: configure your arrival time, workdays, route, and alert offsets once. The Plan screen can use TomTom's current traffic route duration to update its recommended departure, expected arrival, and traffic outlook. This is a current snapshot, not a forecast for a later time. When the app refreshes its TomTom snapshot, AutoPilot recalculates its reminder times too. If no fresh snapshot is available, it uses your personal trip history or starter estimate.
 
 - Keeps the commute focused with five mobile tabs and remembers your light or dark theme choice.
 
 - Saves a commute, profile, arrival deadline, work days, transport mode, starting estimates, and punctuality buffer on this device.
-- Recommends a departure using the median and 80th percentile of your past trips, grouped by mode and weekday when enough samples exist. Confidence is shown as a qualitative level, not a guaranteed probability.
+- Recommends a departure using the current TomTom traffic snapshot when available; otherwise it uses your median and 80th percentile of past trips, grouped by mode and weekday when enough samples exist. The live estimate can change before you travel.
 - Compares car and bike using your own logged trips. If there is no history for a mode, it shows an editable starter estimate with low confidence.
 - Lets you start/finish a trip manually. The app learns actual travel time and marks the arrival early, on time, or late. Too early / accurate / too late feedback adjusts your personal buffer.
 - Shows a weekly punctuality view and weekday trends. Export or clear your local data in Profile & preferences.
@@ -22,22 +22,22 @@ Leave Now is designed as a commute AutoPilot: configure your arrival time, workd
 
 ## TomTom setup
 
-1. In Leave Now, open **Settings → TomTom live traffic**.
+1. In Leave Now, open **Settings → TomTom map setup**.
 2. Paste your TomTom API key and tap **Save on this phone**. The key is stored in this browser only; it is not in the source files or ZIP.
-3. Save a route, then tap **Check live traffic** on the Plan tab. The app geocodes the two entered locations and asks TomTom Routing for a traffic-aware estimate.
-4. TomTom suggests a departure time using the traffic snapshot, selected arrival time, and your punctuality buffer. This is a snapshot: traffic may change, so tap again before leaving.
+3. Save a route and choose an arrival time. Leave Now geocodes the two locations and requests a traffic-aware route from TomTom.
+4. The Plan screen uses the current TomTom travel time with your arrival time and buffer to show an estimated departure and arrival. The Plan screen, Map tab, route, and mode refreshes also update AutoPilot reminder times. The snapshot is kept for up to 20 minutes and is not a prediction of future traffic. Traffic may change before leaving.
 
 The current TomTom pricing page lists 20,000 free monthly Routing API requests and 20,000 Geocoding API requests. Review your TomTom account limits and usage. Restrict the key to Search and Routing APIs and your GitHub Pages website address. A browser key is visible in browser network requests, so domain and API restrictions matter. [TomTom pricing](https://docs.tomtom.com/pricing) · [Routing API](https://docs.tomtom.com/routing-api/documentation/tomtom-maps/v1/calculate-route)
 
 ## Important live-data limits
 
-This app does **not** read Google's live ETA, traffic, incident, or navigation progress from the Google Maps app. Google Maps does not expose the phone app's private live data to this web app. Without a routing/traffic provider, the ETA and late-risk estimate come from your own recorded trips and editable starting estimates. OpenStreetMap provides a free route option; live closures and traffic need a separate live-data provider.
+This app does **not** read Google's live ETA, traffic, incident, or navigation progress from the Google Maps app. Google Maps does not expose the phone app's private live data to this web app. Without a TomTom key, the ETA and late-risk estimate come from your own recorded trips and editable starting estimates. TomTom's current route duration updates the departure plan and reminder schedule when the app refreshes. It cannot predict traffic at a future departure time, and background reminders cannot refresh traffic data while the app is closed.
 
 “AI” here means an on-device pattern learner using personal trip history; no paid AI service, account, or server upload is used to learn. If the app is closed, phone GPS monitoring stops. The browser and phone OS may delay local notifications; use push setup for reliable scheduled reminders while closed.
 
 ## Publish on GitHub Pages
 
-Copy the top-level app files (`index.html`, `app.js`, `ui.js`, `push-ui.js`, manifest, service worker, and icon) to the repository root. Keep `worker/` as a folder with `src/index.js` inside it. Commit and push. GitHub Pages should publish from the `main` branch root. The site URL in this setup is `https://mundadaankit2424-dev.github.io/Leave-Now/`.
+Copy the top-level app files (`index.html`, `app.js`, `ui.js`, `push-ui.js`, `tomtom.js`, manifest, service worker, and icon) to the repository root. Keep `worker/` as a folder with `src/index.js` inside it. Commit and push. GitHub Pages should publish from the `main` branch root. The site URL in this setup is `https://mundadaankit2424-dev.github.io/Ankit-MVP/`.
 
 ## Optional free Cloudflare push setup
 
@@ -62,7 +62,7 @@ This Worker sends scheduled push reminders only. It makes **no Google Routes cal
 7. Run `npm run deploy` and copy the `https://…workers.dev` URL shown.
 8. In Leave Now, open **Connect free notifications**, enter the Worker URL and the generated app token, and tap **Connect**. Then tap **Enable notifications**, allow the phone permission, and tap **Schedule my alerts**.
 
-The Worker expects the app origin `https://mundadaankit2424-dev.github.io` and app URL `https://mundadaankit2424-dev.github.io/Leave-Now/`. If your Pages URL changes, update both values in `worker/wrangler.jsonc` and redeploy. The scheduled trigger checks every minute in India time.
+The Worker expects the app origin `https://mundadaankit2424-dev.github.io` and app URL `https://mundadaankit2424-dev.github.io/Ankit-MVP/`. If your Pages URL changes, update both values in `worker/wrangler.jsonc` and redeploy. The scheduled trigger checks every minute in India time.
 
 ## Data and privacy
 
