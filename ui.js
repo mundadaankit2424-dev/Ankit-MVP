@@ -1,5 +1,10 @@
 (()=>{
   const main=document.querySelector('main.app');if(!main)return;
+  // Restore and wire the theme control; the CSS palettes already exist in index.html.
+  const themeKey='leave-now-theme-v1',root=document.documentElement,themeButton=document.querySelector('#themeToggle');
+  function applyTheme(theme){const dark=theme==='dark';root.classList.toggle('dark-theme',dark);root.classList.toggle('light-theme',!dark);if(themeButton){themeButton.textContent=dark?'☀':'☾';themeButton.setAttribute('aria-label',dark?'Switch to light theme':'Switch to dark theme');themeButton.title=dark?'Switch to light theme':'Switch to dark theme'}const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?'#0c1714':'#f4f6f2'}
+  let savedTheme='light';try{savedTheme=localStorage.getItem(themeKey)||'light'}catch{}applyTheme(savedTheme);
+  themeButton?.addEventListener('click',()=>{savedTheme=root.classList.contains('dark-theme')?'light':'dark';applyTheme(savedTheme);try{localStorage.setItem(themeKey,savedTheme)}catch{}});
   const greeting=main.querySelector('.greeting');
   const cards=[...main.querySelectorAll(':scope > section.card')],details=[...main.querySelectorAll(':scope > details.card')];
   const make=(id,title,hint)=>{const section=document.createElement('section');section.className='screen';section.id=id;section.innerHTML=`<h1 class="screen-title">${title}</h1><p class="screen-hint">${hint}</p>`;main.insertBefore(section,main.querySelector('.footer'));return section};

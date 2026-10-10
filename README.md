@@ -4,7 +4,7 @@ Leave Now is an installable mobile web app for planning a commute around a requi
 
 ## What it does
 
-The interface has a calm light theme by default, a dark theme switch, and five clear tabs: Plan, Map, Journey, Insights, and Settings.
+The interface has a calm light theme by default, a working light/dark theme switch, and five clear tabs: Plan, Map, Journey, Insights, and Settings.
 
 Leave Now is designed as a commute AutoPilot: configure your arrival time, workdays, route, and alert offsets once. The Plan screen can use TomTom's current traffic route duration to update its recommended departure, expected arrival, and traffic outlook. This is a current snapshot, not a forecast for a later time. When the app refreshes its TomTom snapshot, AutoPilot recalculates its reminder times too. If no fresh snapshot is available, it uses your personal trip history or starter estimate.
 
@@ -17,8 +17,12 @@ Leave Now is designed as a commute AutoPilot: configure your arrival time, workd
 - Shows a weekly punctuality view and weekday trends. Export or clear your local data in Profile & preferences.
 - Optional auto-start and arrival detection uses phone location while the app is open. Grant location permission only if you want it.
 - Includes a TomTom street map, live traffic overlay, and route line, plus a Google Maps navigation link.
-- Refreshes weather at origin and destination through Open-Meteo when the app opens or a route is saved. The typed place text is sent for geocoding. Weather is shown as context; it is not yet used to alter the learned ETA.
+- Shows hourly Open-Meteo forecast near planned departure at the origin and expected arrival at the destination; refreshes on app open, route save, manual request, and every 30 minutes while the app is open. Weather is context and does not alter the route ETA.
 - Can send −30 minute, −15 minute, and leave-now reminders. Local reminders are best effort while the app is open. For alerts while it is closed, deploy the optional Cloudflare Worker and enable push.
+
+## Weather setup
+
+Weather uses Open-Meteo forecast and geocoding endpoints directly from the phone. For personal, non-commercial use it requires no API key and is free up to the provider’s published daily request limits. The current app refreshes twice per route update (origin and destination), plus a background refresh every 30 minutes while the app is open. Open-Meteo requires attribution, which is shown in the app. The provider does not offer a service uptime guarantee on its free tier; if it is unavailable, commute planning still works. See [Open-Meteo pricing and limits](https://open-meteo.com/en/pricing) and [terms](https://open-meteo.com/en/terms).
 
 ## TomTom setup
 
@@ -27,7 +31,7 @@ Leave Now is designed as a commute AutoPilot: configure your arrival time, workd
 3. Save a route and choose an arrival time. Leave Now geocodes the two locations and requests a traffic-aware route from TomTom.
 4. The Plan screen uses the current TomTom travel time with your arrival time and buffer to show an estimated departure and arrival. The Plan screen, Map tab, route, and mode refreshes also update AutoPilot reminder times. The snapshot is kept for up to 20 minutes and is not a prediction of future traffic. Traffic may change before leaving.
 
-The current TomTom pricing page lists 20,000 free monthly Routing API requests and 20,000 Geocoding API requests. Review your TomTom account limits and usage. Restrict the key to Search and Routing APIs and your GitHub Pages website address. A browser key is visible in browser network requests, so domain and API restrictions matter. [TomTom pricing](https://docs.tomtom.com/pricing) · [Routing API](https://docs.tomtom.com/routing-api/documentation/tomtom-maps/v1/calculate-route)
+Review your TomTom account limits and usage. Restrict the key to Search, Routing, Map Display, and Traffic Flow APIs and your GitHub Pages website address. A browser key is visible in browser network requests, so domain and API restrictions matter. [TomTom pricing](https://docs.tomtom.com/pricing) · [Routing API](https://docs.tomtom.com/routing-api/documentation/tomtom-maps/v1/calculate-route)
 
 ## Important live-data limits
 
@@ -62,7 +66,7 @@ This Worker sends scheduled push reminders only. It makes **no Google Routes cal
 7. Run `npm run deploy` and copy the `https://…workers.dev` URL shown.
 8. In Leave Now, open **Connect free notifications**, enter the Worker URL and the generated app token, and tap **Connect**. Then tap **Enable notifications**, allow the phone permission, and tap **Schedule my alerts**.
 
-The Worker expects the app origin `https://mundadaankit2424-dev.github.io` and app URL `https://mundadaankit2424-dev.github.io/Ankit-MVP/`. If your Pages URL changes, update both values in `worker/wrangler.jsonc` and redeploy. The scheduled trigger checks every minute in India time.
+The Worker expects the app origin `https://mundadaankit2424-dev.github.io` and app URL `https://mundadaankit2424-dev.github.io/Ankit-MVP/`. If your Pages URL changes, update both values in `worker/wrangler.jsonc` and redeploy. The scheduled trigger checks every minute in India time. Push alerts contain the estimate and buffer last saved by the app; if the app is closed, they cannot refresh TomTom traffic before delivery. Disconnecting push now removes the browser subscription and its server schedule.
 
 ## Data and privacy
 
